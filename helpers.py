@@ -14,8 +14,8 @@ def load_networks(datapath, filename=NETWORKS_FILE):
 
 def get_doctor_differential(li):
     return [val["concept"]["id"] for val in li if val["concept"]["id"] is not None]
-
-
+#
+# Using produce_differentials, the system gathers doctors’ diagnoses and compares them with the true diagnosis using doctor_top_ns to see whether they were accurate. It can also calculate the average number of diseases considered by each doctor using mean_list.
 def produce_differentials(card):
     return dict(
         [
@@ -39,8 +39,8 @@ def mean_list(li):
         return "none"
     else:
         return np.mean(li)
-
-
+#
+# Finally, the bintest function is used to determine whether the observed results are statistically significant. This helps assess whether the observed diagnostic accuracy is meaningful or just due to chance.
 def bintest(x, y, comf_thresh):
     if comf_thresh == 0:
         return sum(x) >= sum(y)

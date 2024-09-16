@@ -7,8 +7,9 @@ import numpy as np
 
 from constants import NETWORKS_FILE
 from helpers import load_networks
-
-
+#
+# This function prepares the input for the inference model by extracting relevant symptoms and risk factors from a "case card." It structures the data into a format where each piece of evidence (symptom or risk factor) is associated with a state (True or False). This function is crucial because counterfactual inference relies heavily on the evidence provided to the model.
+# The function classifies symptoms and risk factors based on their presence or severity, which will later be used to run inference on whether the evidence leads to a correct or counterfactual diagnosis.
 def get_evidence_from_casecard(card):
     risk_ev = [
         [k["concept"]["id"], "True" if k["presence"] == "PRESENT" else "False"]
@@ -22,8 +23,9 @@ def get_evidence_from_casecard(card):
     ]
     int_ev = [{"id": el[0], "state": el[1]} for el in risk_ev + symptom_ev]
     return int_ev
-
-
+#
+# Generates all possible subsets of the input sequence. This is important in counterfactual reasoning, as the model might need to explore different combinations of symptoms and risk factors to understand how they contribute to different diagnostic outcomes.
+# In counterfactual inference, this function is critical for exploring "what if" scenarios. For instance, it can answer questions like: "What would the diagnosis have been if these symptoms were absent?
 def powerset(seq):
     """
     Returns all the subsets of this set. This is a generator. so define a list L and then call pL = [x for x in powerset(l)]
@@ -108,8 +110,8 @@ def DOS_multiply(duration, results, nd):
     }
     dur_num = cui_to_duration[duration]
     return dict([[k, val * get_coeff(k, dur_num, nd)] for k, val in results.items()])
-
-
+#
+# Counterfactual reasoning : If some of those symptoms were absent, how would the diagnosis change? This process involves generating counterfactual scenarios using the powerset of symptoms and running inferences on each scenario.
 def counterfactual_correction_sufficiency(
     disease_children, d, Z, positive_symptoms, network_data
 ):
